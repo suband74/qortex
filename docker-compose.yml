@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: db_sub
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: db_vote
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_pwd
+
+  web:
+    container_name: web_sub
+    build: .
+    command: bash -c "python discography/manage.py migrate --noinput && python discography/manage.py runserver 0.0.0.0:8000" 
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  
